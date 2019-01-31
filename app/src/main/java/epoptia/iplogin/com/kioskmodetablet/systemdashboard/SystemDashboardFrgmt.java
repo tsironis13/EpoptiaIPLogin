@@ -1,0 +1,595 @@
+package epoptia.iplogin.com.kioskmodetablet.systemdashboard;
+
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import epoptia.iplogin.com.R;
+import epoptia.iplogin.com.app.utils.ImageUtls;
+import epoptia.iplogin.com.databinding.SystemDashboardFrgmtBinding;
+import epoptia.iplogin.com.kioskmodetablet.KioskModeActivity;
+import epoptia.iplogin.com.kioskmodetablet.pdfviewer.PdfViewerFrgmt;
+import epoptia.iplogin.com.kioskmodetablet.stationworkers.StationWorkersFrgmt;
+import epoptia.iplogin.com.pojo.LogoutWorkerRequest;
+import epoptia.iplogin.com.pojo.UploadImageResponse;
+import epoptia.iplogin.com.pojo.ValidateAdminResponse;
+import epoptia.iplogin.com.retrofit.APIClient;
+import epoptia.iplogin.com.retrofit.APIInterface;
+import epoptia.iplogin.com.utls.SharedPrefsUtl;
+import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
+import static android.webkit.WebView.HitTestResult.EDIT_TEXT_TYPE;
+
+/**
+ * Created by giannis on 5/9/2017.
+ */
+
+public class SystemDashboardFrgmt extends Fragment implements WebView.OnTouchListener {
+
+    private static final String debugTag = SystemDashboardFrgmt.class.getSimpleName();
+    private View mView;
+    private SystemDashboardFrgmtBinding mBinding;
+    private int stationId, workerId;
+    private String cookie, url, serverIp, end_url, stationName, workerUsername;
+    private APIInterface apiInterface, customHeadersApiInterface;
+    private ImageUtls imageUtls;
+    private static final int ACTION_IMAGE_CAPTURE = 900;
+    private File output;
+    private Uri photoURI;
+    private int ordertrackID, delay;
+    private boolean imageUploading, uploadImage, webviewIsDisabled;//uploadImage is used to check if image has to be uploaded to activities destroyed
+    private SpeedTestSocket speedTestSocket;
+    private Handler networkStatusHandler;
+
+    public static SystemDashboardFrgmt newInstance(int stationId, String cookie, String url, String stationName, String workerUsername, int workerId, String action) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("station_id", stationId);
+        bundle.putString("cookie", cookie);
+        bundle.putString("url", url);
+        bundle.putString("station_name", stationName);
+        bundle.putString("worker_username", workerUsername);
+        bundle.putInt("worker_id", workerId);
+        //action => device, reboot
+        bundle.putString("action", action);
+        SystemDashboardFrgmt systemDashboardFrgmt = new SystemDashboardFrgmt();
+        systemDashboardFrgmt.setArguments(bundle);
+        return systemDashboardFrgmt;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mView == null ) {
+            mBinding = DataBindingUtil.inflate(inflater, R.layout.system_dashboard_frgmt, container, false);
+
+            mView = mBinding.getRoot();
+        }
+
+        return mView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+        SharedPrefsUtl.setBooleanPref(getActivity(), getResources().getString(R.string.is_working), true);
+        imageUtls = new ImageUtls(getActivity());
+        apiInterface = APIClient.getClient(SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.server_ip))).create(APIInterface.class);
+        serverIp = SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.server_ip));
+        if (savedInstanceState != null) {
+            cookie = savedInstanceState.getString("cookie");
+            end_url = savedInstanceState.getString("url");
+            stationId = savedInstanceState.getInt("station_id");
+
+            if (savedInstanceState.getBoolean("upload_image")) {
+                ordertrackID = savedInstanceState.getInt("ordertrackid");
+                output = (File) savedInstanceState.getSerializable("output");
+                uploadImage(output);
+            }
+        } else {
+            if (getArguments() != null) {
+                if (getArguments().getString("action") != null && getArguments().getString("action").equals("device")) {
+                    delay = 5;
+                } else {
+                    delay = 15000; //probably reboot
+                }
+
+                cookie = getArguments().getString("cookie");
+                ((KioskModeActivity)getActivity()).setCookie(cookie);
+                end_url = getArguments().getString("url");
+                ((KioskModeActivity)getActivity()).setUrl(end_url);
+                stationId = getArguments().getInt("station_id");
+                stationName = getArguments().getString("station_name");
+                workerUsername = getArguments().getString("worker_username");
+                workerId = getArguments().getInt("worker_id");
+            }
+        }
+        url = constructFullUrl(end_url);
+        //Log.e(debugTag, "URL: "+url);
+        if (stationName == null) stationName = SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.stationame));
+        if (workerUsername == null) workerUsername = SharedPrefsUtl.getStringFlag(getActivity(), "worker_username");
+        if (workerId == 0) workerId = SharedPrefsUtl.getIntFlag(getActivity(), "worker_id");
+        setToolbarTitle();
+        ((KioskModeActivity)getActivity()).getToolbarTextViewUsernameRight().setText(workerUsername);
+        if (getActivity() != null && isAdded()) {
+            initializeView();
+        }
+        speedTestSocket = new SpeedTestSocket();
+        addSpeedTestListener();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACTION_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                uploadImage(output);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkNetworkStateEveryMinute();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("networkState"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //destroyWebView();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("networkState"));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("cookie", cookie);
+        outState.putString("url", end_url);
+        if (output != null) outState.putSerializable("output", output);
+        outState.putInt("ordertrackid", ordertrackID);
+        outState.putBoolean("upload_image", uploadImage);
+        outState.putInt("station_id", stationId);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.findItem(R.id.logoutWorkerItem).setVisible(true);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logoutWorkerItem:
+                if (isNetworkAvailable()) {
+                    if (!imageUploading) {
+                        LogoutWorkerRequest request = new LogoutWorkerRequest();
+                        request.setAction("logout_worker");
+                        request.setUserId(workerId);
+                        String accessToken = SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.access_token));
+                        request.setAccess_token(accessToken);
+                        /**
+                         GET List Resources
+                         **/
+                        Call<ValidateAdminResponse> responseCall = apiInterface.logoutWorker(request);
+                        responseCall.enqueue(new Callback<ValidateAdminResponse>() {
+                            @Override
+                            public void onResponse(Call<ValidateAdminResponse> call, Response<ValidateAdminResponse> response) {
+                                if (response.body().getCode() == 200) {
+                                    if (getActivity() != null) {
+                                        SharedPrefsUtl.removeStringkey(getActivity(), "cookie");
+
+                                        getActivity().getSupportFragmentManager()
+                                                    .beginTransaction()
+                                                    .replace(R.id.kioskModeLlt, StationWorkersFrgmt.newInstance(stationId, stationName), getResources().getString(R.string.station_workers_frgmt))
+                                                    .commit();
+                                    }
+                                } else {
+                                    showSnackBrMsg(getResources().getString(R.string.error), mBinding.containerLnlt, Snackbar.LENGTH_SHORT);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ValidateAdminResponse> call, Throwable t) {
+                                showSnackBrMsg(getResources().getString(R.string.error), mBinding.containerLnlt, Snackbar.LENGTH_SHORT);
+                            }
+                        });
+                    }
+                } else {
+                    showSnackBrMsg(getResources().getString(R.string.no_connection), mBinding.containerLnlt, Snackbar.LENGTH_SHORT);
+                }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        view.performClick();
+        return webviewIsDisabled;
+    }
+
+    @SuppressLint("AddJavascriptInterface")
+    public void initializeView() {
+        mBinding.setLoading(true);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mBinding.setLoading(false);
+                if (getActivity() != null && isAdded()) {
+                    if (isNetworkAvailable()) {
+                        if (mBinding.getHaserror()) mBinding.setHaserror(false);
+                        CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(mBinding.webView.getContext());
+                        CookieManager cookieManager = CookieManager.getInstance();
+                        cookieManager.setAcceptCookie(true);
+                        cookieManager.removeSessionCookie();
+                        cookieManager.setCookie(url, cookie);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                            cookieManager.flush();
+                        } else {
+                            cookieSyncManager.sync();
+                        }
+                        mBinding.webView.getSettings().setJavaScriptEnabled(true);
+                        mBinding.webView.getSettings().setBuiltInZoomControls(true);
+                        mBinding.webView.getSettings().setDisplayZoomControls(false);
+
+                        mBinding.webView.addJavascriptInterface(new Object()
+                        {
+                            @JavascriptInterface           // For API 17+
+                            public void performClick(int id)
+                            {
+                                ordertrackID = id;
+                                if (!imageUploading) openCamera();
+                            }
+                        }, "uploadPhoto");
+                        mBinding.webView.addJavascriptInterface(new Object()
+                        {
+                            @JavascriptInterface           // For API 17+
+                            public void performClick(String path)
+                            {
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.kioskModeLlt, PdfViewerFrgmt.newInstance(path, stationId, cookie, end_url, stationName, workerUsername, workerId), getResources().getString(R.string.pdfviewer_frgmt))
+                                        .addToBackStack(getResources().getString(R.string.pdfviewer_frgmt))
+                                        .commit();
+                            }
+                        }, "pdfView");
+                        mBinding.webView.addJavascriptInterface(new Object()
+                        {
+                            @JavascriptInterface           // For API 17+
+                            public void onHiddenInputFocusOnBarcodeHit()
+                            {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        hideKeyboard();
+                                    }
+                                }, 350);
+                            }
+                        }, "barcode");
+                        mBinding.webView.setWebViewClient(new WebViewClient());
+                        mBinding.webView.setVerticalScrollBarEnabled(true);
+                        mBinding.webView.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                WebView.HitTestResult hr = ((WebView)view).getHitTestResult();
+
+                                if (hr.getType() == EDIT_TEXT_TYPE) {
+                                    new Handler().postDelayed(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            hideKeyboard();
+
+                                        }
+                                    }, 200);
+                                }
+
+                                Log.i("Webview click", "getExtra = "+ hr.getExtra() + "\t\t Type=" + hr.getType());
+
+                                return false;
+                            }
+                        });
+                        mBinding.webView.loadUrl(url);
+                    } else {
+                        mBinding.setHaserror(true);
+                        mBinding.setErrortext(getResources().getString(R.string.no_connection));
+                    }
+                }
+            }
+        }, delay);
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getActivity().getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(getActivity());
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
+    private boolean isNetworkAvailable() {
+        if (getActivity() == null) return false;
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (cm != null ? cm.getActiveNetworkInfo() : null) != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    public void showSnackBrMsg(String msg, View container, int length) {
+        Snackbar snackbar = Snackbar.make(container, msg, length);
+        snackbar.show();
+    }
+
+    private void setToolbarTitle() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+
+        String title;
+
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            title = getResources().getString(R.string.workers_frgmt_title) + " " + stationName;
+        } else {
+            int stationNameLength = stationName.length();
+
+            if (stationNameLength > 15) {
+                String substr = stationName.substring(0, 15);
+
+                title = getResources().getString(R.string.workers_frgmt_portrait_title) + " " + substr + "...";
+            } else {
+                title = getResources().getString(R.string.workers_frgmt_portrait_title) + " " + stationName;
+            }
+        }
+
+        ((KioskModeActivity)getActivity()).getToolbarTextViewTitle().setText(title);
+    }
+
+    private void deleteAppStorageImage(File file) {
+        imageUtls.deleteAppStorage(file);
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            try {
+                output = imageUtls.createImageFile(".jpg");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (output != null) {
+                uploadImage = true;
+                photoURI = imageUtls.getUriForFile(output);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    ClipData clip = ClipData.newUri(getActivity().getContentResolver(), "photo", photoURI);
+                    intent.setClipData(clip);
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+                else {
+                    List<ResolveInfo> resInfoList = getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        getActivity().grantUriPermission(packageName, photoURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
+                }
+                startActivityForResult(intent, ACTION_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private void uploadImage(File file) {
+        MultipartBody.Part mfile;
+        final Snackbar snackbar = Snackbar.make(mBinding.containerLnlt, getResources().getString(R.string.image_uploading), Snackbar.LENGTH_INDEFINITE);
+        webviewIsDisabled = true;
+        mBinding.webView.setOnTouchListener(this);
+        snackbar.show();
+        imageUploading = true;
+        try {
+            CookieManager cookieManager = CookieManager.getInstance();
+            String cookies = cookieManager.getCookie(url);
+
+            customHeadersApiInterface = APIClient.getClientWithCustomHeaders(SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.server_ip)), cookies).create(APIInterface.class);
+            mfile = imageUtls.getRequestFileBody(file);
+            RequestBody action = RequestBody.create(okhttp3.MultipartBody.FORM, "upload_image");
+            RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.access_token)));
+            RequestBody order_line_track_id = RequestBody.create(okhttp3.MultipartBody.FORM, ordertrackID+"");
+            Call<UploadImageResponse> uploadImageCall = customHeadersApiInterface.uploadImage(action, token, order_line_track_id, mfile);
+            uploadImageCall.enqueue(new Callback<UploadImageResponse>() {
+                @Override
+                public void onResponse(Call<UploadImageResponse> call, Response<UploadImageResponse> response) {
+                    uploadImage = false;
+                    snackbar.dismiss();
+                    webviewIsDisabled = false;
+                    if (response.body().getCode() == 200) {
+                        Snackbar.make(mBinding.containerLnlt, getResources().getString(R.string.image_uploaded_successfully), Snackbar.LENGTH_LONG).show();
+                        mBinding.webView.reload();
+                    }
+                    imageUploading = false;
+                    deleteAppStorageImage(output);
+                }
+
+                @Override
+                public void onFailure(Call<UploadImageResponse> call, Throwable t) {
+                    webviewIsDisabled = false;
+                    uploadImage = false;
+                    imageUploading = false;
+                    snackbar.dismiss();
+                    deleteAppStorageImage(output);
+                }
+            });
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void destroyWebView() {
+        mBinding.webView.clearHistory();
+
+        // NOTE: clears RAM cache, if you pass true, it will also clear the disk cache.
+        // Probably not a great idea to pass true if you have other WebViews still alive.
+        mBinding.webView.clearCache(true);
+
+        mBinding.webView.onPause();
+        mBinding.webView.removeAllViews();
+        mBinding.webView.destroyDrawingCache();
+
+        // NOTE: This pauses JavaScript execution for ALL WebViews,
+        // do not use if you have other WebViews still alive.
+        // If you create another WebView after calling this,
+        // make sure to call mWebView.resumeTimers().
+        mBinding.webView.pauseTimers();
+
+        // NOTE: This can occasionally cause a segfault below API 17 (4.2)
+        mBinding.webView.destroy();
+    }
+
+    private String constructFullUrl(String url) {
+        return "http://"+serverIp+"/"+url;
+    }
+
+    private void checkNetworkStateEveryMinute() {
+        networkStatusHandler = new Handler();
+        networkStatusHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
+                networkStatusHandler.postDelayed(this, 60000);
+            }
+        }, 1000);
+    }
+
+    private int getNetworkLinkSpeed() {
+        WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager != null ? wifiManager.getConnectionInfo() : null;
+        if (wifiInfo != null) {
+            return wifiInfo.getLinkSpeed(); //measured using WifiInfo.LINK_SPEED_UNITS
+        }
+        return -1;
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            boolean networkStatus = intent.getBooleanExtra("networkState", false);
+            setNetworkStatusAndShowNetworkRelatedSnackbar(networkStatus);
+        }
+    };
+
+    private void setNetworkStatusAndShowNetworkRelatedSnackbar(boolean networkState) {
+        if (!networkState) {
+            mBinding.setNetworkState("NO INTERNET CONNECTION");
+
+            return;
+        }
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                speedTestSocket.startDownload("http://ipv4.ikoula.testdebit.info/1M.iso");
+            }
+        });
+
+        thread.start();
+    }
+
+    private void addSpeedTestListener() {
+        speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+
+            @Override
+            public void onCompletion(final SpeedTestReport report) {
+                // called when download/upload is complete
+                //System.out.println("[COMPLETED] rate in octet/s : " + report.getTransferRateOctet());
+                //System.out.println("[COMPLETED] rate in bit/s   : " + report.getTransferRateBit());
+
+                displayNetworkQuality(convertBitPerSecondToMegabitPerSecond(report.getTransferRateBit().doubleValue()));
+            }
+
+            @Override
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+                // called when a download/upload error occur
+            }
+
+            @Override
+            public void onProgress(float percent, SpeedTestReport report) {
+                // called to notify download/upload progress
+                //System.out.println("[PROGRESS] progress : " + percent + "%");
+                //System.out.println("[PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
+                //System.out.println("[PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
+            }
+        });
+    }
+
+    private double convertBitPerSecondToMegabitPerSecond(double bitPerSecond) {
+        return bitPerSecond * 0.000001;
+    }
+
+    private void displayNetworkQuality(double downloadRateInMegabitPerSecond) {
+        if (getNetworkLinkSpeed() <= 15 && downloadRateInMegabitPerSecond <= 0.5) {
+            mBinding.setNetworkState("Low NetworkUtility Connection <100Mbps (Please check out Wifi and Lan) \n Low Internet Connection <15 Mbps");
+        } else if (downloadRateInMegabitPerSecond <= 0.5) {
+            mBinding.setNetworkState("Low Internet Connection <15 Mbps");
+        } else if (getNetworkLinkSpeed() <= 15) {
+            mBinding.setNetworkState("Low NetworkUtility Connection <100Mbps (Please check out Wifi and Lan)");
+        } else {
+            mBinding.setNetworkState(null);
+        }
+    }
+}
