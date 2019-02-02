@@ -108,7 +108,7 @@ public class WorkStationsActivity extends BaseActivity implements WordStationsCo
     @Override
     protected void onResume() {
         super.onResume();
-        checkNetworkStateEveryMinute();
+        //checkNetworkStateEveryMinute();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("networkState"));
     }
 
@@ -427,6 +427,7 @@ public class WorkStationsActivity extends BaseActivity implements WordStationsCo
 
             @Override
             public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+                int x = 10;
                 // called when a download/upload error occur
             }
 

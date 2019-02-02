@@ -134,7 +134,7 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
                 initializeView();
             }
         });
-        checkNetworkStateEveryMinute();
+        //checkNetworkStateEveryMinute();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("networkState"));
     }
 

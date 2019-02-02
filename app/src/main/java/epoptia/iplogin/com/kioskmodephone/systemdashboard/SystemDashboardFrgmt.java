@@ -165,7 +165,7 @@ public class SystemDashboardFrgmt extends Fragment implements WebView.OnTouchLis
     @Override
     public void onResume() {
         super.onResume();
-        checkNetworkStateEveryMinute();
+        //checkNetworkStateEveryMinute();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("networkState"));
     }
 
