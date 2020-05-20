@@ -1,0 +1,1099 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/capsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_weight="0.5"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_publish_black_18" />
+
+            <Button
+                android:id="@+id/button_slash"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="/" />
+
+            <Button
+                android:id="@+id/button_1"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="1"/>
+
+            <Button
+                android:id="@+id/button_2"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="2"/>
+
+            <Button
+                android:id="@+id/button_3"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="3"/>
+
+            <Button
+                android:id="@+id/button_4"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="4"/>
+
+            <Button
+                android:id="@+id/button_5"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="5"/>
+
+            <Button
+                android:id="@+id/button_6"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="6"/>
+
+            <Button
+                android:id="@+id/button_7"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="7"/>
+
+            <Button
+                android:id="@+id/button_8"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="8"/>
+
+            <Button
+                android:id="@+id/button_9"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="9"/>
+
+            <Button
+                android:id="@+id/button_0"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="0"/>
+
+            <ImageButton
+                android:id="@+id/button_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_weight="0.5"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_backspace_black_18" />
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+        <!-- //region upper case letters -->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/upperCaseLettersLlt"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:visibility="gone"-->
+            <!--android:orientation="vertical">-->
+
+            <!-- //region Greek upper case letters -->
+
+            <LinearLayout
+                android:id="@+id/greekUpperLettersLlt"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_questionmark"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text=";" />
+
+                    <Button
+                        android:id="@+id/button_greeks"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ς" />
+
+                    <Button
+                        android:id="@+id/button_greekE"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ε" />
+
+                    <Button
+                        android:id="@+id/button_greekR"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ρ" />
+
+                    <Button
+                        android:id="@+id/button_greekT"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Τ" />
+
+                    <Button
+                        android:id="@+id/button_greekY"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Υ" />
+
+                    <Button
+                        android:id="@+id/button_greekU"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Θ" />
+
+                    <Button
+                        android:id="@+id/button_greekI"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ι" />
+
+                    <Button
+                        android:id="@+id/button_greekO"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ο" />
+
+                    <Button
+                        android:id="@+id/button_greekP"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Π" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_greekA"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Α" />
+
+                    <Button
+                        android:id="@+id/button_greekS"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Σ" />
+
+                    <Button
+                        android:id="@+id/button_greekD"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Δ" />
+
+                    <Button
+                        android:id="@+id/button_greekF"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Φ" />
+
+                    <Button
+                        android:id="@+id/button_greekG"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Γ" />
+
+                    <Button
+                        android:id="@+id/button_greekH"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Η" />
+
+                    <Button
+                        android:id="@+id/button_greekJ"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ξ" />
+
+                    <Button
+                        android:id="@+id/button_greekK"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Κ" />
+
+                    <Button
+                        android:id="@+id/button_greekL"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Λ" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_greekZ"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ζ" />
+
+                    <Button
+                        android:id="@+id/button_greekX"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Χ" />
+
+                    <Button
+                        android:id="@+id/button_greekC"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ψ" />
+
+                    <Button
+                        android:id="@+id/button_greekV"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ω" />
+
+                    <Button
+                        android:id="@+id/button_greekB"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Β" />
+
+                    <Button
+                        android:id="@+id/button_greekN"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Ν" />
+
+                    <Button
+                        android:id="@+id/button_greekM"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text="Μ" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+                <!-- //endregion -->
+
+                <!-- //region Latin upper case letters -->
+
+                <LinearLayout
+                    android:id="@+id/latinUpperLettersLlt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/button_Q"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="Q" />
+
+                        <Button
+                            android:id="@+id/button_W"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="W" />
+
+                        <Button
+                            android:id="@+id/button_E"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="E" />
+
+                        <Button
+                            android:id="@+id/button_R"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="R" />
+
+                        <Button
+                            android:id="@+id/button_T"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="T" />
+
+                        <Button
+                            android:id="@+id/button_Y"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="Y" />
+
+                        <Button
+                            android:id="@+id/button_U"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="U" />
+
+                        <Button
+                            android:id="@+id/button_I"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="I" />
+
+                        <Button
+                            android:id="@+id/button_O"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="O" />
+
+                        <Button
+                            android:id="@+id/button_P"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="P" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/button_A"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="A" />
+
+                        <Button
+                            android:id="@+id/button_S"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="S" />
+
+                        <Button
+                            android:id="@+id/button_D"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="D" />
+
+                        <Button
+                            android:id="@+id/button_F"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="F" />
+
+                        <Button
+                            android:id="@+id/button_G"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="G" />
+
+                        <Button
+                            android:id="@+id/button_H"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="H" />
+
+                        <Button
+                            android:id="@+id/button_J"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="J" />
+
+                        <Button
+                            android:id="@+id/button_K"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="K" />
+
+                        <Button
+                            android:id="@+id/button_L"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="L" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/button_Z"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="Z" />
+
+                        <Button
+                            android:id="@+id/button_X"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="X" />
+
+                        <Button
+                            android:id="@+id/button_C"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="C" />
+
+                        <Button
+                            android:id="@+id/button_V"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="V" />
+
+                        <Button
+                            android:id="@+id/button_B"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="B" />
+
+                        <Button
+                            android:id="@+id/button_N"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="N" />
+
+                        <Button
+                            android:id="@+id/button_M"
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:text="M" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- //endregion -->
+
+            <!--</LinearLayout>-->
+
+            <!-- //endregion -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- //region Lower case letters -->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/lowerCaseLettersLlt"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+
+            <!-- //region greek lower case letters -->
+
+            <LinearLayout
+                android:id="@+id/greekLowerLettersLlt"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/button_lower_questionmark"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:text=";" />
+
+                    <Button
+                        android:id="@+id/button_lower_greeks"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:textAllCaps="false"
+                        android:layout_weight="1"
+                        android:text="ς" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekE"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ε" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekR"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ρ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekT"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="τ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekY"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="υ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekU"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="θ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekI"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ι" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekO"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ο" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekP"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="π" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/button_lower_greekA"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="α" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekS"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="σ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekD"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="δ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekF"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="φ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekG"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="γ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekH"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="η" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekJ"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ξ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekK"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="κ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekL"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="λ" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/button_lower_greekZ"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ζ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekX"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="χ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekC"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ψ" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekV"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ω" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekB"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="β" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekN"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="ν" />
+
+                    <Button
+                        android:id="@+id/button_lower_greekM"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="μ" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- //endregion -->
+
+            <LinearLayout
+                android:id="@+id/latinLowerLettersLlt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_q"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="q" />
+
+                    <Button
+                        android:id="@+id/button_w"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="w" />
+
+                    <Button
+                        android:id="@+id/button_e"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="e" />
+
+                    <Button
+                        android:id="@+id/button_r"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="r" />
+
+                    <Button
+                        android:id="@+id/button_t"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="t" />
+
+                    <Button
+                        android:id="@+id/button_y"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="y" />
+
+                    <Button
+                        android:id="@+id/button_u"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="u" />
+
+                    <Button
+                        android:id="@+id/button_i"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="i" />
+
+                    <Button
+                        android:id="@+id/button_o"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="o" />
+
+                    <Button
+                        android:id="@+id/button_p"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="p" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_a"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="a" />
+
+                    <Button
+                        android:id="@+id/button_s"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="s" />
+
+                    <Button
+                        android:id="@+id/button_d"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="d" />
+
+                    <Button
+                        android:id="@+id/button_f"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="f" />
+
+                    <Button
+                        android:id="@+id/button_g"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="g" />
+
+                    <Button
+                        android:id="@+id/button_h"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="h" />
+
+                    <Button
+                        android:id="@+id/button_j"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="j" />
+
+                    <Button
+                        android:id="@+id/button_k"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="k" />
+
+                    <Button
+                        android:id="@+id/button_l"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="l" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_z"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="z" />
+
+                    <Button
+                        android:id="@+id/button_x"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="x" />
+
+                    <Button
+                        android:id="@+id/button_c"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="c" />
+
+                    <Button
+                        android:id="@+id/button_v"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="v" />
+
+                    <Button
+                        android:id="@+id/button_b"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="b" />
+
+                    <Button
+                        android:id="@+id/button_n"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="n" />
+
+                    <Button
+                        android:id="@+id/button_m"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="false"
+                        android:text="m" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- //region latin lower case letters -->
+
+        <!--</LinearLayout>-->
+
+        <!-- //endregion -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/changeLanguageBtn"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="0.5"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:src="@drawable/baseline_language_black_18" />
+
+            <Button
+                android:id="@+id/button_enter"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="3"
+                android:text="" />
+
+            <Button
+                android:id="@+id/button_fullstop"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="0.5"
+                android:text="." />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</merge>

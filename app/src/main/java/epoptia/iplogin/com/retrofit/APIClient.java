@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 //import okhttp3.logging.HttpLoggingInterceptor;
 //import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -22,15 +23,15 @@ public class APIClient {
     public static Retrofit getClient(String ip) {
 
         String URL = "http://"+ip+"/mobile/";
-        //HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        //interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
-          //      .addInterceptor(interceptor)
+          .addInterceptor(interceptor)
                 .build();
 //        OkHttpClient client = new OkHttpClient.Builder().build();
 

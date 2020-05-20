@@ -6,26 +6,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
+import com.google.android.material.snackbar.Snackbar;
+
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +41,7 @@ import java.util.List;
 import epoptia.iplogin.com.R;
 import epoptia.iplogin.com.adapters.RecyclerViewAdapter;
 import epoptia.iplogin.com.databinding.StationWorkersFrgmtBinding;
+import epoptia.iplogin.com.keyboard.MyKeyboard;
 import epoptia.iplogin.com.kioskmodephone.KioskModeActivity;
 import epoptia.iplogin.com.kioskmodephone.systemdashboard.SystemDashboardFrgmt;
 import epoptia.iplogin.com.pojo.GetWorkersRequest;
@@ -68,8 +77,9 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
     private int stationId;
     private AlertDialog mAlertDialog;
     private String stationName, title;
-    private Handler networkStatusHandler;
+    //private Handler networkStatusHandler;
     private SpeedTestSocket speedTestSocket;
+    private InputConnection ic;
 
     public static StationWorkersFrgmt newInstance(int stationId, String stationName) {
         Bundle bundle = new Bundle();
@@ -132,7 +142,7 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
     @Override
     public void onPause() {
         super.onPause();
-        networkStatusHandler.removeCallbacksAndMessages(null);
+        //networkStatusHandler.removeCallbacksAndMessages(null);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
     }
 
@@ -226,22 +236,60 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item=menu.findItem(R.id.unlockItem);
+        item.setVisible(true);
+    }
+
+    @Override
     public void onBaseViewClick(View view) {
         final StationWorker stationWorker = stationWorkerList.get((int)view.getTag());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final EditText edittext = new EditText(getActivity());
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        View mView = getLayoutInflater().inflate(R.layout.custom_login_worker_dialog, null);
+
+        final EditText workerPasswordEdt = (EditText) mView.findViewById(R.id.workerPasswordEdt);
+
+        Button mSubmit = (Button) mView.findViewById(R.id.submit);
+
+        final MyKeyboard myKeyboard = (MyKeyboard) mView.findViewById(R.id.keyboard);
+
+        workerPasswordEdt.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        workerPasswordEdt.setTextIsSelectable(true);
+
+        ic = workerPasswordEdt.onCreateInputConnection(new EditorInfo());
+        myKeyboard.setInputConnection(ic);
+
+        //layout.addView(admnUsernameEdt);
+
+        workerPasswordEdt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ic = workerPasswordEdt.onCreateInputConnection(new EditorInfo());
+                myKeyboard.setInputConnection(ic);
+
+                myKeyboard.setVisibility(View.VISIBLE);
+
+                return false;
+            }
+        });
+
+
+        //final EditText edittext = new EditText(getActivity());
+        //edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
         builder.setTitle(getResources().getString(R.string.enter_worker_password_dialog_title));
-        builder.setView(edittext);
-        builder.setPositiveButton(getResources().getString(R.string.submit), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        builder.setView(mView);
+
+        mSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 if (isNetworkAvailable()) {
                     final ValidateWorkerRequest request = new ValidateWorkerRequest();
                     request.setAction("login_worker");
                     String accessToken = SharedPrefsUtl.getStringFlag(getActivity(), getResources().getString(R.string.access_token));
                     request.setAccess_token(accessToken);
                     request.setUsername(stationWorker.getUsername());
-                    request.setPassword(edittext.getText().toString());
+                    request.setPassword(workerPasswordEdt.getText().toString());
                     request.setStation_id(stationId);
 
                     Call<ValidateWorkerResponse> responseCall = apiInterface.validateWorker(request);
@@ -256,10 +304,10 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
                                 SharedPrefsUtl.setIntPref(getActivity(), stationWorker.getUserId(), "worker_id");
 
                                 getActivity().getSupportFragmentManager()
-                                                                .beginTransaction()
-                                                                .replace(R.id.kioskModeLlt, SystemDashboardFrgmt.newInstance(stationId, cookie, response.body().getWorkstation_url(), stationName, stationWorker.getUsername(), stationWorker.getUserId()), getResources().getString(R.string.system_dahsboard_frgmt))
-                                                                .addToBackStack(getResources().getString(R.string.system_dahsboard_frgmt))
-                                                                .commit();
+                                        .beginTransaction()
+                                        .replace(R.id.kioskModeLlt, SystemDashboardFrgmt.newInstance(stationId, cookie, response.body().getWorkstation_url(), stationName, stationWorker.getUsername(), stationWorker.getUserId()), getResources().getString(R.string.system_dahsboard_frgmt))
+                                        .addToBackStack(getResources().getString(R.string.system_dahsboard_frgmt))
+                                        .commit();
                             } else {
                                 showSnackBrMsg(getResources().getString(R.string.username_password_invalid), mBinding.containerLnlt, Snackbar.LENGTH_SHORT);
                             }
@@ -275,6 +323,12 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
                 }
             }
         });
+
+//        builder.setPositiveButton(getResources().getString(R.string.submit), new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//
+//            }
+//        });
         mAlertDialog = builder.create();
         mAlertDialog.show();
     }
@@ -312,14 +366,14 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
     }
 
     private void checkNetworkStateEveryMinute() {
-        networkStatusHandler = new Handler();
-        networkStatusHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
-                networkStatusHandler.postDelayed(this, 60000);
-            }
-        }, 1000);
+//        networkStatusHandler = new Handler();
+//        networkStatusHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
+//                networkStatusHandler.postDelayed(this, 60000);
+//            }
+//        }, 1000);
     }
 
     private int getNetworkLinkSpeed() {
@@ -336,7 +390,7 @@ public class StationWorkersFrgmt extends Fragment implements StationWorkersContr
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             boolean networkStatus = intent.getBooleanExtra("networkState", false);
-            setNetworkStatusAndShowNetworkRelatedSnackbar(networkStatus);
+            //setNetworkStatusAndShowNetworkRelatedSnackbar(networkStatus);
         }
     };
 

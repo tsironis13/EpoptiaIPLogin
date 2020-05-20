@@ -11,9 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import java.lang.reflect.Method;
 

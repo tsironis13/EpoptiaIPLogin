@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,15 +18,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import epoptia.iplogin.com.R;
 import epoptia.iplogin.com.SplashScreenActivity;
 import epoptia.iplogin.com.app.utils.KioskService;
 import epoptia.iplogin.com.base.BaseActivity;
 import epoptia.iplogin.com.databinding.ActivityKioskModeBinding;
+import epoptia.iplogin.com.keyboard.MyKeyboard;
 import epoptia.iplogin.com.kioskmodetablet.stationworkers.StationWorkersFrgmt;
 import epoptia.iplogin.com.kioskmodetablet.systemdashboard.SystemDashboardFrgmt;
 import epoptia.iplogin.com.pojo.UnlockDeviceRequest;
@@ -66,11 +74,16 @@ public class KioskModeActivity extends BaseActivity {
     private int workerId;
     private int count = 0;
     private long startMillis=0;
+    private InputConnection ic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_kiosk_mode);
         setSupportActionBar(mBinding.incltoolbar.toolbar);
         apiInterface = APIClient.getClient(SharedPrefsUtl.getStringFlag(this, getResources().getString(R.string.server_ip))).create(APIInterface.class);
@@ -109,6 +122,11 @@ public class KioskModeActivity extends BaseActivity {
                         uisystemvisibility = visibility;
                     }
                 });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -239,22 +257,64 @@ public class KioskModeActivity extends BaseActivity {
 
     private void unlockDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        View mView = getLayoutInflater().inflate(R.layout.custom_unlock_device_dialog, null);
+
+        final EditText admnUsernameEdt = (EditText) mView.findViewById(R.id.adminUsernameEdt);
+        final EditText admnPasswordEdt = (EditText) mView.findViewById(R.id.adminPasswordEdt);
+
+        Button mUnlockDevice = (Button) mView.findViewById(R.id.unlockDevice);
+
+        final MyKeyboard myKeyboard = (MyKeyboard) mView.findViewById(R.id.keyboard);
+
         builder.setTitle(getResources().getString(R.string.enter_admin_cred_dialog_title));
 
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
+        admnUsernameEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        admnUsernameEdt.setTextIsSelectable(true);
 
-        final EditText admnUsernameEdt = new EditText(this);
-        admnUsernameEdt.setHint(getResources().getString(R.string.admnusername_hint));
-        layout.addView(admnUsernameEdt);
+        ic = admnUsernameEdt.onCreateInputConnection(new EditorInfo());
+        myKeyboard.setInputConnection(ic);
 
-        final EditText admnPasswordEdt = new EditText(this);
-        admnPasswordEdt.setHint(getResources().getString(R.string.admnpassword_hint));
-        layout.addView(admnPasswordEdt);
+        //layout.addView(admnUsernameEdt);
 
-        builder.setView(layout);
-        builder.setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        admnUsernameEdt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ic = admnUsernameEdt.onCreateInputConnection(new EditorInfo());
+                myKeyboard.setInputConnection(ic);
+
+                myKeyboard.setVisibility(View.VISIBLE);
+
+                return false;
+            }
+        });
+
+        //final EditText admnPasswordEdt = new EditText(this);
+        //admnPasswordEdt.setHint(getResources().getString(R.string.admnpassword_hint));
+
+        admnPasswordEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        admnPasswordEdt.setTextIsSelectable(true);
+
+        //layout.addView(admnPasswordEdt);
+
+        admnPasswordEdt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ic = admnPasswordEdt.onCreateInputConnection(new EditorInfo());
+                myKeyboard.setInputConnection(ic);
+
+                myKeyboard.setVisibility(View.VISIBLE);
+
+                return false;
+            }
+        });
+
+
+        mUnlockDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAlertDialog.cancel();
+
                 UnlockDeviceRequest request = new UnlockDeviceRequest();
                 request.setAccess_token(SharedPrefsUtl.getStringFlag(KioskModeActivity.this, getResources().getString(R.string.access_token)));
                 request.setAction("unlock_device");
@@ -289,6 +349,110 @@ public class KioskModeActivity extends BaseActivity {
                 }
             }
         });
+
+
+
+
+
+
+
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        View mView = getLayoutInflater().inflate(R.layout.custom_unlock_device_dialog, null);
+//
+//        builder.setTitle(getResources().getString(R.string.enter_admin_cred_dialog_title));
+//
+//        LinearLayout layout = new LinearLayout(this);
+//        layout.setOrientation(LinearLayout.VERTICAL);
+//
+//        final EditText admnUsernameEdt = new EditText(this);
+//        admnUsernameEdt.setHint(getResources().getString(R.string.admnusername_hint));
+//
+//
+//
+//        admnUsernameEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+//        admnUsernameEdt.setTextIsSelectable(true);
+//
+//        ic = admnUsernameEdt.onCreateInputConnection(new EditorInfo());
+//        mBinding.keyboard.setInputConnection(ic);
+//
+//        layout.addView(admnUsernameEdt);
+//
+//        admnUsernameEdt.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                InputMethodManager inputMgr = (InputMethodManager) getApplication().
+//                        getSystemService(Context.INPUT_METHOD_SERVICE);
+//                inputMgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+//
+//                ic = admnUsernameEdt.onCreateInputConnection(new EditorInfo());
+//                mBinding.keyboard.setInputConnection(ic);
+//
+//                mBinding.keyboard.setVisibility(View.VISIBLE);
+//
+//                return false;
+//            }
+//        });
+//
+//        final EditText admnPasswordEdt = new EditText(this);
+//        admnPasswordEdt.setHint(getResources().getString(R.string.admnpassword_hint));
+//
+//        admnPasswordEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+//        admnPasswordEdt.setTextIsSelectable(true);
+//
+//        layout.addView(admnPasswordEdt);
+//
+//        admnPasswordEdt.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                ic = admnPasswordEdt.onCreateInputConnection(new EditorInfo());
+//                mBinding.keyboard.setInputConnection(ic);
+//
+//                mBinding.keyboard.setVisibility(View.VISIBLE);
+//
+//                return false;
+//            }
+//        });
+
+        builder.setView(mView);
+
+//        builder.setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//                UnlockDeviceRequest request = new UnlockDeviceRequest();
+//                request.setAccess_token(SharedPrefsUtl.getStringFlag(KioskModeActivity.this, getResources().getString(R.string.access_token)));
+//                request.setAction("unlock_device");
+//                //request.setCustomer_domain(SharedPrefsUtl.getStringFlag(KioskModeActivity.this, getResources().getString(R.string.subdomain)));
+//                request.setUsername(admnUsernameEdt.getText().toString());
+//                request.setPassword(admnPasswordEdt.getText().toString());
+//                Call<UnlockDeviceResponse> responseCall = apiInterface.unlockDevice(request);
+//
+//                if (isNetworkAvailable()) {
+//                    responseCall.enqueue(new Callback<UnlockDeviceResponse>() {
+//                        @Override
+//                        public void onResponse(Call<UnlockDeviceResponse> call, Response<UnlockDeviceResponse> response) {
+//                            if (response.body().getCode() == 200) {
+//                                SharedPrefsUtl.removeStringkey(KioskModeActivity.this, "cookie");
+//                                SharedPrefsUtl.setBooleanPref(KioskModeActivity.this, getResources().getString(R.string.device_locked), false);
+//                                Intent intent = new Intent(KioskModeActivity.this, SplashScreenActivity.class);
+//                                intent.putExtra(getResources().getString(R.string.action_type), 1020);
+//                                startActivity(intent);
+//                                finish();
+//                            } else {
+//                                showSnackBrMsg(getResources().getString(R.string.username_password_invalid), mBinding.kioskModeLlt, Snackbar.LENGTH_SHORT);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<UnlockDeviceResponse> call, Throwable t) {
+//                            showSnackBrMsg(getResources().getString(R.string.error), mBinding.kioskModeLlt, Snackbar.LENGTH_SHORT);
+//                        }
+//                    });
+//                } else {
+//                    showSnackBrMsg(getResources().getString(R.string.no_connection), mBinding.kioskModeLlt, Snackbar.LENGTH_SHORT);
+//                }
+//            }
+//        });
         mAlertDialog = builder.create();
         mAlertDialog.show();
     }
@@ -337,7 +501,11 @@ public class KioskModeActivity extends BaseActivity {
         WindowManager manager = ((WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
 
         WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
-        localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        }
         localLayoutParams.gravity = Gravity.TOP;
         localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 

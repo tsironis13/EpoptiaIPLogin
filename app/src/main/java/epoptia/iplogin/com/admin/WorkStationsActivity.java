@@ -8,8 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
@@ -18,19 +16,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class WorkStationsActivity extends BaseActivity implements WordStationsCo
     private int actionType, stationId;
     private APIInterface apiInterface;
     private String stationName;
-    private Handler networkStatusHandler;
+    //private Handler networkStatusHandler;
     private SpeedTestSocket speedTestSocket;
 
     @Override
@@ -114,7 +115,7 @@ public class WorkStationsActivity extends BaseActivity implements WordStationsCo
 
     @Override
     protected void onPause() {
-        networkStatusHandler.removeCallbacksAndMessages(null);
+        //networkStatusHandler.removeCallbacksAndMessages(null);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         super.onPause();
     }
@@ -249,6 +250,7 @@ public class WorkStationsActivity extends BaseActivity implements WordStationsCo
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case OVERLAY_PERMISSION_REQ_CODE:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -368,14 +370,14 @@ public class WorkStationsActivity extends BaseActivity implements WordStationsCo
     }
 
     private void checkNetworkStateEveryMinute() {
-        networkStatusHandler = new Handler();
-        networkStatusHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
-                networkStatusHandler.postDelayed(this, 60000);
-            }
-        }, 1000);
+//        networkStatusHandler = new Handler();
+//        networkStatusHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
+//                networkStatusHandler.postDelayed(this, 60000);
+//            }
+//        }, 1000);
     }
 
     private int getNetworkLinkSpeed() {

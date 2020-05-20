@@ -1,11 +1,14 @@
 package epoptia.iplogin.com.adapters;
 
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
-import android.support.v7.widget.RecyclerView;
+
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by giannis on 5/9/2017.

@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
@@ -18,10 +17,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import com.google.android.material.snackbar.Snackbar;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +31,11 @@ import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +84,7 @@ public class SystemDashboardFrgmt extends Fragment implements WebView.OnTouchLis
     private int ordertrackID;
     private boolean imageUploading, uploadImage, webviewIsDisabled;//uploadImage is used to check if image has to be uploaded to activities destroyed
     private SpeedTestSocket speedTestSocket;
-    private Handler networkStatusHandler;
+    //private Handler networkStatusHandler;
 
     public static SystemDashboardFrgmt newInstance(int stationId, String cookie, String url, String stationName, String workerUsername, int workerId) {
         Bundle bundle = new Bundle();
@@ -241,6 +243,15 @@ public class SystemDashboardFrgmt extends Fragment implements WebView.OnTouchLis
     public boolean onTouch(View view, MotionEvent motionEvent) {
         view.performClick();
         return webviewIsDisabled;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item=menu.findItem(R.id.unlockItem);
+
+        if (item != null) {
+            item.setVisible(false);
+        }
     }
 
     @SuppressLint("AddJavascriptInterface")
@@ -438,14 +449,14 @@ public class SystemDashboardFrgmt extends Fragment implements WebView.OnTouchLis
     }
 
     private void checkNetworkStateEveryMinute() {
-        networkStatusHandler = new Handler();
-        networkStatusHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
-                networkStatusHandler.postDelayed(this, 60000);
-            }
-        }, 1000);
+//        networkStatusHandler = new Handler();
+//        networkStatusHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setNetworkStatusAndShowNetworkRelatedSnackbar(isNetworkAvailable());
+//                networkStatusHandler.postDelayed(this, 60000);
+//            }
+//        }, 1000);
     }
 
     private int getNetworkLinkSpeed() {
@@ -462,7 +473,7 @@ public class SystemDashboardFrgmt extends Fragment implements WebView.OnTouchLis
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             boolean networkStatus = intent.getBooleanExtra("networkState", false);
-            setNetworkStatusAndShowNetworkRelatedSnackbar(networkStatus);
+            //setNetworkStatusAndShowNetworkRelatedSnackbar(networkStatus);
         }
     };
 

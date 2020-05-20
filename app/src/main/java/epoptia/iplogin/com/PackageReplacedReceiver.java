@@ -21,22 +21,22 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
 
             PackageManager p = context.getPackageManager();
             Intent i;
-
+//todo disable this process avoiding problems when internet cable is unplugged or internet signal is lost
             if (locked) {
                 ComponentName cN = new ComponentName(context, KioskModeActivity.class);
                 p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
-                i = new Intent(context, KioskModeActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //i = new Intent(context, KioskModeActivity.class);
+                //i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             } else {
                 ComponentName cN = new ComponentName(context, WorkStationsActivity.class);
                 p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
-                i = new Intent(context, WorkStationsActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //i = new Intent(context, WorkStationsActivity.class);
+                //i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
 
-            context.startActivity(i);
+            //context.startActivity(i);
         }
     }
 }

@@ -4,8 +4,9 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+
+import androidx.databinding.DataBindingUtil;
 
 import epoptia.iplogin.com.admin.WorkStationsActivity;
 import epoptia.iplogin.com.base.BaseActivity;
@@ -63,7 +64,7 @@ public class SplashScreenActivity extends BaseActivity {
         //final boolean authenticated = SharedPrefsUtl.getBooleanFlag(this, getResources().getString(R.string.domain_authenticated));
         final boolean ipRegistered = SharedPrefsUtl.getBooleanFlag(this, getResources().getString(R.string.ip_registered));
         final boolean locked = SharedPrefsUtl.getBooleanFlag(this, getResources().getString(R.string.device_locked));
-//        startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+        startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
         if (!ipRegistered) {
             startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
         } else if (!locked) {

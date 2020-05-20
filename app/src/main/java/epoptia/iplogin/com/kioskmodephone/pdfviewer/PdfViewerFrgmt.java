@@ -1,13 +1,13 @@
 package epoptia.iplogin.com.kioskmodephone.pdfviewer;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
@@ -110,14 +110,14 @@ public class PdfViewerFrgmt extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        ((androidx.appcompat.app.AppCompatActivity)getActivity()).getSupportActionBar().hide();
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ((androidx.appcompat.app.AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 
     @Override

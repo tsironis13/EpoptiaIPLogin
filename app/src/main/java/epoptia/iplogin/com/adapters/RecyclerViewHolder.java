@@ -1,10 +1,13 @@
 package epoptia.iplogin.com.adapters;
 
-import android.databinding.ViewDataBinding;
-import android.support.v7.widget.RecyclerView;
+
+
 import android.view.View;
 
-import com.android.databinding.library.baseAdapters.BR;
+import androidx.databinding.ViewDataBinding;
+import androidx.databinding.library.baseAdapters.BR;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 import epoptia.iplogin.com.R;
 

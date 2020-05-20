@@ -3,7 +3,8 @@ package epoptia.iplogin.com;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.RequiresApi;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by giannis on 29/8/2017.

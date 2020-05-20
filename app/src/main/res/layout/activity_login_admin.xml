@@ -15,95 +15,110 @@
 
     </data>
 
-    <LinearLayout
-        android:id="@+id/containerLnlt"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingTop="35dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:src="@drawable/logo"
-            android:layout_marginBottom="30dp"
-            android:contentDescription="@string/image_desc" />
+        <LinearLayout
+            android:id="@+id/containerLnlt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingTop="35dp">
 
-        <TextView
-            android:id="@+id/deviceIsTabletTtv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:src="@drawable/logo"
+                android:layout_marginBottom="30dp"
+                android:contentDescription="@string/image_desc" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="250dp"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/ipEdt"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/deviceIsTabletTtv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/ip_hint"
-                android:textSize="13sp"
-                android:enabled="@{!isIpRegistered}"
-                android:inputType="text" />
+                android:layout_marginBottom="12dp" />
 
-        </android.support.design.widget.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="250dp"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="xxxxx.epoptia.com" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ipEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ip_hint"
+                    android:textSize="13sp"
+                    android:enabled="@{!isIpRegistered}"
+                    android:inputType="text" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/admnusernameTxtInputLyt"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:visibility="@{isIpRegistered ? View.VISIBLE : View.GONE}">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/admnusernameEdt"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/admnusername_hint"
-                android:textSize="13sp"
-                android:inputType="text" />
+                android:text="xxxxx.epoptia.com" />
 
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/admnpasswordTxtInputLyt"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:visibility="@{isIpRegistered ? View.VISIBLE : View.GONE}">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/admnpasswordEdt"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/admnusernameTxtInputLyt"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/admnpassword_hint"
-                android:textSize="13sp"
-                android:inputType="text" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="@{isIpRegistered ? View.VISIBLE : View.GONE}">
 
-        </android.support.design.widget.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/admnusernameEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/admnusername_hint"
+                    android:textSize="13sp"
+                    android:inputType="text" />
 
-        <Button
-            android:id="@+id/submitBtn"
-            android:layout_width="100dp"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/admnpasswordTxtInputLyt"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:visibility="@{isIpRegistered ? View.VISIBLE : View.GONE}">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/admnpasswordEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/admnpassword_hint"
+                    android:textSize="13sp"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/submitBtn"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/submit"
+                android:layout_marginTop="15dp" />
+
+            <ProgressBar
+                android:id="@+id/prgrsBr"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:visibility="@{processing ? View.VISIBLE : View.GONE}" />
+
+        </LinearLayout>
+
+        <epoptia.iplogin.com.keyboard.MyKeyboard
+            android:id="@+id/keyboard"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/submit"
-            android:layout_marginTop="15dp" />
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:gravity="bottom" />
 
-        <ProgressBar
-            android:id="@+id/prgrsBr"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="5dp"
-            android:visibility="@{processing ? View.VISIBLE : View.GONE}" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </layout>

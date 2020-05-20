@@ -2,14 +2,21 @@ package epoptia.iplogin.com.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.text.InputType;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import epoptia.iplogin.com.R;
 import epoptia.iplogin.com.admin.WorkStationsActivity;
@@ -43,6 +50,7 @@ public class LoginActivity extends BaseActivity {
     private ActivityLoginAdminBinding mBinding;
     private boolean isIpRegistered;
     private APIInterface apiInterface;
+    private InputConnection ic;
 
     //endregion
 
@@ -73,12 +81,66 @@ public class LoginActivity extends BaseActivity {
                 submitForm();
             }
         });
+
+        // prevent system keyboard from appearing when EditText is tapped
+        mBinding.ipEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mBinding.ipEdt.setTextIsSelectable(true);
+
+        mBinding.admnusernameEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mBinding.admnusernameEdt.setTextIsSelectable(true);
+
+        mBinding.admnpasswordEdt.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mBinding.admnpasswordEdt.setTextIsSelectable(true);
+
+        // pass the InputConnection from the EditText to the keyboard
+        ic = mBinding.ipEdt.onCreateInputConnection(new EditorInfo());
+        mBinding.keyboard.setInputConnection(ic);
+
+        mBinding.ipEdt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBinding.keyboard.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mBinding.admnusernameEdt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ic = mBinding.admnusernameEdt.onCreateInputConnection(new EditorInfo());
+                mBinding.keyboard.setInputConnection(ic);
+
+                mBinding.keyboard.setVisibility(View.VISIBLE);
+
+                return false;
+            }
+        });
+
+        mBinding.admnpasswordEdt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ic = mBinding.admnpasswordEdt.onCreateInputConnection(new EditorInfo());
+                mBinding.keyboard.setInputConnection(ic);
+
+                mBinding.keyboard.setVisibility(View.VISIBLE);
+
+                return false;
+            }
+        });
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(getResources().getString(R.string.ip_registered), mBinding.getIsIpRegistered());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mBinding.keyboard.getVisibility() == View.VISIBLE) {
+            mBinding.keyboard.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -95,7 +157,11 @@ public class LoginActivity extends BaseActivity {
     //region Private Methods
 
     private void submitForm() {
-        hideSoftKeyboard();
+        if (mBinding.keyboard.getVisibility() == View.VISIBLE) {
+            mBinding.keyboard.setVisibility(View.GONE);
+        }
+
+
         if (isIpRegistered) {
             if (mBinding.admnusernameEdt.getText().toString().isEmpty() || mBinding.admnpasswordEdt.getText().toString().isEmpty()) {
                 showSnackBrMsg(getResources().getString(R.string.username_password_required), mBinding.containerLnlt, Snackbar.LENGTH_SHORT);
